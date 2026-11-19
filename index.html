@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>考前複習 3Q_1119 線上測驗系統</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX CSS & JS for Math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+        .katex { font-size: 1.08em; }
+        .opt-checkbox:checked + .opt-label {
+            background-color: #4f46e5;
+            color: white;
+            border-color: #4f46e5;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 pb-16">
+
+    <!-- Header Navigation -->
+    <header class="bg-indigo-600 text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-lg md:text-xl font-bold flex items-center gap-2">
+                <span>📝</span> 考前複習 3Q_1119
+            </h1>
+            <button onclick="toggleAdminModal()" class="bg-indigo-800 hover:bg-indigo-900 text-xs md:text-sm px-3 py-1.5 rounded-lg border border-indigo-400 font-medium transition flex items-center gap-1">
+                ⚙️ 教師後台
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-6">
+
+        <!-- Reference Constants -->
+        <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-3.5 mb-6 text-xs md:text-sm text-indigo-900 flex flex-wrap gap-4 justify-center font-medium">
+            <span>參考數值：</span>
+            <span>$\log 2 \doteq 0.3010$</span>
+            <span>$\log 3 \doteq 0.4771$</span>
+            <span>$\log 7 \doteq 0.8451$</span>
+        </div>
+
+        <!-- Student Info Bar -->
+        <section id="student-info-section" class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 mb-6">
+            <h2 class="text-base font-bold text-slate-700 mb-3 flex items-center gap-2">
+                👤 學生個人資訊
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">班號</label>
+                    <input type="text" id="student-id" class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">姓名</label>
+                    <input type="text" id="student-name" class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+            </div>
+        </section>
+
+        <!-- Retry Hint Banner -->
+        <div id="retry-hint-banner" class="hidden mb-6 p-4 bg-amber-50 border-l-4 border-amber-500 text-amber-800 rounded-r-lg text-sm shadow-sm">
+            ⚠️ <strong>提示：</strong> 部分題目回答錯誤，您還有最後 1 次修改重試的機會！請重新檢查紅框標示的題目。
+        </div>
+
+        <!-- Questions List -->
+        <form id="quiz-form" onsubmit="event.preventDefault(); submitQuiz();" class="space-y-6">
+
+            <!-- Q1 (Multi-select) -->
+            <div class="q-card bg-white p-5 rounded-xl shadow-sm border-2 border-slate-200 transition" id="q-card-q1">
+                <div class="font-semibold text-slate-800 mb-3 leading-relaxed">
+                    1. 下列哪些數是方程式 $2 + \log_3(x-2) = \log_3(x^2-2x)$ 的解？（多選）
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 mb-3">
+                    <div>
+                        <input type="checkbox" id="q1_A" name="q1" value="A" class="hidden opt-checkbox">
+                        <label for="q1_A" class="opt-label block text-center py-2.5 px-3 border border-slate-300 rounded-lg cursor-pointer font-medium hover:bg-slate-50 transition">(A) $2$</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q1_B" name="q1" value="B" class="hidden opt-checkbox">
+                        <label for="q1_B" class="opt-label block text-center py-2.5 px-3 border border-slate-300 rounded-lg cursor-pointer font-medium hover:bg-slate-50 transition">(B) $3$</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q1_C" name="q1" value="C" class="hidden opt-checkbox">
+                        <label for="q1_C" class="opt-label block text-center py-2.5 px-3 border border-slate-300 rounded-lg cursor-pointer font-medium hover:bg-slate-50 transition">(C) $4$</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q1_D" name="q1" value="D" class="hidden opt-checkbox">
+                        <label for="q1_D" class="opt-label block text-center py-2.5 px-3 border border-slate-300 rounded-lg cursor-pointer font-medium hover:bg-slate-50 transition">(D) $7$</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q1_E" name="q1" value="E" class="hidden opt-checkbox">
+                        <label for="q1_E" class="opt-label block text-center py-2.5 px-3 border border-slate-300 rounded-lg cursor-pointer font-medium hover:bg-slate-50 transition">(E) $9$</label>
+                    </div>
+                </div>
+                <div class="result-msg text-sm font-semibold"></div>
+            </div>
+
+            <!-- Q2 (Fill-in) -->
+            <div class="q-card bg-white p-5 rounded-xl shadow-sm border-2 border-slate-200 transition" id="q-card-q2">
+                <div class="font-semibold text-slate-800 mb-3 leading-relaxed">
+                    2. 設 $x$ 為正整數，則滿足不等式 $-1 \le \log_{\frac{1}{2}}(\log_3 x)$ 的正整數解 $x$ 有多少個？（請填入阿拉伯數字）
+                </div>
+                <input type="number" inputmode="numeric" id="q2" class="quiz-input w-full border border-slate-300 rounded-lg p-2.5 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <div class="result-msg text-sm mt-2 font-semibold"></div>
+            </div>
+
+            <!-- Q3 (Multi-select) -->
+            <div class="q-card bg-white p-5 rounded-xl shadow-sm border-2 border-slate-200 transition" id="q-card-q3">
+                <div class="font-semibold text-slate-800 mb-3 leading-relaxed">
+                    3. 放射性物質的半衰期 $T$ 定義為「每經過時間 $T$，該物質的質量會衰退成原來的一半」。鉛製容器中有 $A$、$B$ 兩種放射性物質，其半衰期分別為 $T_A$、$T_B$。開始記錄時這兩種物質的質量相等，經 $112$ 天後量得物質 $B$ 的質量為物質 $A$ 的質量的四分之一。試選出正確的選項。（多選）
+                </div>
+                <div class="space-y-2 mb-3">
+                    <div>
+                        <input type="checkbox" id="q3_A" name="q3" value="A" class="hidden opt-checkbox">
+                        <label for="q3_A" class="opt-label block py-2.5 px-3.5 border border-slate-300 rounded-lg cursor-pointer text-sm md:text-base hover:bg-slate-50 transition">(A) 經過 $t$ 天後，物質 $A$ 的質量變為原來的 $(\frac{1}{2})^{\frac{t}{T_A}}$</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q3_B" name="q3" value="B" class="hidden opt-checkbox">
+                        <label for="q3_B" class="opt-label block py-2.5 px-3.5 border border-slate-300 rounded-lg cursor-pointer text-sm md:text-base hover:bg-slate-50 transition">(B) 經過 $t$ 天後，物質 $B$ 的質量變為原來的 $(\frac{1}{2})^{\frac{t}{T_B}}$</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q3_C" name="q3" value="C" class="hidden opt-checkbox">
+                        <label for="q3_C" class="opt-label block py-2.5 px-3.5 border border-slate-300 rounded-lg cursor-pointer text-sm md:text-base hover:bg-slate-50 transition">(C) $-2 + \frac{112}{T_A} = \frac{112}{T_B}$</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q3_D" name="q3" value="D" class="hidden opt-checkbox">
+                        <label for="q3_D" class="opt-label block py-2.5 px-3.5 border border-slate-300 rounded-lg cursor-pointer text-sm md:text-base hover:bg-slate-50 transition">(D) $2 + \frac{112}{T_A} = \frac{112}{T_B}$</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q3_E" name="q3" value="E" class="hidden opt-checkbox">
+                        <label for="q3_E" class="opt-label block py-2.5 px-3.5 border border-slate-300 rounded-lg cursor-pointer text-sm md:text-base hover:bg-slate-50 transition">(E) $-2 + \log_2 \frac{112}{T_A} = \log_2 \frac{112}{T_B}$</label>
+                    </div>
+                </div>
+                <div class="result-msg text-sm font-semibold"></div>
+            </div>
+
+            <!-- Q4 (Multi-select) -->
+            <div class="q-card bg-white p-5 rounded-xl shadow-sm border-2 border-slate-200 transition" id="q-card-q4">
+                <div class="font-semibold text-slate-800 mb-3 leading-relaxed">
+                    4. 若正實數 $x, y$ 滿足 $\log_{10} x = 2.4$，$\log_{10} y = 3.6$，試選出正確的選項。（多選）
+                </div>
+                <div class="space-y-2 mb-3">
+                    <div>
+                        <input type="checkbox" id="q4_A" name="q4" value="A" class="hidden opt-checkbox">
+                        <label for="q4_A" class="opt-label block py-2.5 px-3.5 border border-slate-300 rounded-lg cursor-pointer text-sm md:text-base hover:bg-slate-50 transition">(A) $xy$ 的個位數字是 $0$</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q4_B" name="q4" value="B" class="hidden opt-checkbox">
+                        <label for="q4_B" class="opt-label block py-2.5 px-3.5 border border-slate-300 rounded-lg cursor-pointer text-sm md:text-base hover:bg-slate-50 transition">(B) $x^3 + 9 \cdot y^2$ 是 $9$ 位數</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q4_C" name="q4" value="C" class="hidden opt-checkbox">
+                        <label for="q4_C" class="opt-label block py-2.5 px-3.5 border border-slate-300 rounded-lg cursor-pointer text-sm md:text-base hover:bg-slate-50 transition">(C) $x^3 + 9 \cdot y^2$ 首位數字是 $2$</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q4_D" name="q4" value="D" class="hidden opt-checkbox">
+                        <label for="q4_D" class="opt-label block py-2.5 px-3.5 border border-slate-300 rounded-lg cursor-pointer text-sm md:text-base hover:bg-slate-50 transition">(D) $x^{-3} + 9 \cdot y^{-2}$ 小數點後第 $6$ 位始不為零</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q4_E" name="q4" value="E" class="hidden opt-checkbox">
+                        <label for="q4_E" class="opt-label block py-2.5 px-3.5 border border-slate-300 rounded-lg cursor-pointer text-sm md:text-base hover:bg-slate-50 transition">(E) $x^{-3} + 9 \cdot y^{-2}$ 小數點後第 $1$ 個不為零的數字是 $6$</label>
+                    </div>
+                </div>
+                <div class="result-msg text-sm font-semibold"></div>
+            </div>
+
+            <!-- Q5 (Multi-select) -->
+            <div class="q-card bg-white p-5 rounded-xl shadow-sm border-2 border-slate-200 transition" id="q-card-q5">
+                <div class="font-semibold text-slate-800 mb-3 leading-relaxed">
+                    5. 下列關於指數函數 $y = 2^x$ 與對數函數 $y = \log_2 x$ 的敘述哪些是正確的？（多選）
+                </div>
+                <div class="space-y-2 mb-3">
+                    <div>
+                        <input type="checkbox" id="q5_A" name="q5" value="A" class="hidden opt-checkbox">
+                        <label for="q5_A" class="opt-label block py-2.5 px-3.5 border border-slate-300 rounded-lg cursor-pointer text-sm md:text-base hover:bg-slate-50 transition">(A) $y = \log_2(x+2)$ 的圖形是 $y = \log_2 x$ 的圖形向右平移兩單位後得到的</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q5_B" name="q5" value="B" class="hidden opt-checkbox">
+                        <label for="q5_B" class="opt-label block py-2.5 px-3.5 border border-slate-300 rounded-lg cursor-pointer text-sm md:text-base hover:bg-slate-50 transition">(B) $\frac{\log_2 20 + \log_2 40}{2} &lt; \log_2 30$</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q5_C" name="q5" value="C" class="hidden opt-checkbox">
+                        <label for="q5_C" class="opt-label block py-2.5 px-3.5 border border-slate-300 rounded-lg cursor-pointer text-sm md:text-base hover:bg-slate-50 transition">(C) $y = \log_2 x$ 和 $y = \log_4 x^2$ 的圖形重合</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q5_D" name="q5" value="D" class="hidden opt-checkbox">
+                        <label for="q5_D" class="opt-label block py-2.5 px-3.5 border border-slate-300 rounded-lg cursor-pointer text-sm md:text-base hover:bg-slate-50 transition">(D) 方程式 $(\frac{1}{2})^x = -\log_2 x$ 的唯一實根 $\alpha$ 滿足 $0 &lt; \alpha &lt; 1$</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="q5_E" name="q5" value="E" class="hidden opt-checkbox">
+                        <label for="q5_E" class="opt-label block py-2.5 px-3.5 border border-slate-300 rounded-lg cursor-pointer text-sm md:text-base hover:bg-slate-50 transition">(E) $y = 2^{x+2}$ 與 $y = \log_2(x+2)$ 的圖形對稱直線 $x - y + 2 = 0$</label>
+                    </div>
+                </div>
+                <div class="result-msg text-sm font-semibold"></div>
+            </div>
+
+            <!-- Submit Button Area -->
+            <div class="pt-4">
+                <button type="submit" id="btn-submit" class="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition duration-150 ease-in-out text-lg flex items-center justify-center gap-2">
+                    <span>🚀</span> 提交答案
+                </button>
+            </div>
+        </form>
+
+        <!-- Result Overview Area -->
+        <div id="result-summary" class="hidden bg-white p-6 rounded-xl shadow-sm border border-slate-200 mt-8 text-center space-y-4">
+            <h3 class="text-xl font-bold text-slate-800">測驗完成！</h3>
+            <div class="text-4xl font-black text-indigo-600 my-2" id="score-text">0 分</div>
+            <p id="accuracy-text" class="text-slate-600 font-medium"></p>
+            <p class="text-xs text-slate-400">作答結果已記錄於系統後台。</p>
+        </div>
+
+    </main>
+
+    <!-- Admin Modal -->
+    <div id="admin-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+            <!-- Modal Header -->
+            <div class="bg-slate-800 text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-lg">教師管理後台（3Q_1119）</h3>
+                <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+            </div>
+            
+            <!-- Auth View -->
+            <div id="admin-auth" class="p-6 space-y-4">
+                <p class="text-sm text-slate-600">請輸入管理者密碼：(預設密碼：<code class="bg-slate-100 px-1 py-0.5 rounded text-indigo-600">admin123</code>)</p>
+                <input type="password" id="admin-password" class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="請輸入密碼">
+                <button onclick="checkAdminPassword()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-lg transition">登入後台</button>
+            </div>
+
+            <!-- Content View -->
+            <div id="admin-content" class="hidden p-6 overflow-y-auto space-y-6">
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100">
+                        <div class="text-xs text-indigo-600 font-semibold">總交卷人數</div>
+                        <div id="stat-count" class="text-xl font-bold text-indigo-900 mt-1">0</div>
+                    </div>
+                    <div class="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
+                        <div class="text-xs text-emerald-600 font-semibold">平均分數</div>
+                        <div id="stat-avg" class="text-xl font-bold text-emerald-900 mt-1">0</div>
+                    </div>
+                    <div class="bg-amber-50 p-3 rounded-lg border border-amber-100">
+                        <div class="text-xs text-amber-600 font-semibold">最高 / 最低分</div>
+                        <div id="stat-range" class="text-xl font-bold text-amber-900 mt-1">0 / 0</div>
+                    </div>
+                </div>
+
+                <!-- Action Toolbar -->
+                <div class="flex justify-between items-center gap-2 pt-2 border-t">
+                    <h4 class="font-bold text-slate-700">學生作答紀錄明細</h4>
+                    <div class="flex gap-2">
+                        <button onclick="exportCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded transition">匯出 CSV</button>
+                        <button onclick="clearRecords()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-3 py-1.5 rounded transition">清空紀錄</button>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="overflow-x-auto border rounded-lg">
+                    <table class="w-full text-sm text-left text-slate-600">
+                        <thead class="text-xs text-slate-700 uppercase bg-slate-100 border-b">
+                            <tr>
+                                <th class="px-3 py-2.5">班號</th>
+                                <th class="px-3 py-2.5">姓名</th>
+                                <th class="px-3 py-2.5">總分</th>
+                                <th class="px-3 py-2.5">各題作答 (1~5)</th>
+                                <th class="px-3 py-2.5">時間</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-records-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Logic JavaScript -->
+    <script>
+        const answersKey = {
+            'q1': ['E'],
+            'q2': '8',
+            'q3': ['A', 'B', 'D'],
+            'q4': ['A', 'B', 'E'],
+            'q5': ['B']
+        };
+
+        const totalQuestions = 5;
+        let attemptCount = 0;
+
+        function getCheckedValues(name) {
+            return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
+                        .map(cb => cb.value)
+                        .sort();
+        }
+
+        function arraysEqual(a, b) {
+            if (a.length !== b.length) return false;
+            return a.every((val, index) => val === b[index]);
+        }
+
+        function submitQuiz() {
+            const studentId = document.getElementById('student-id').value.trim();
+            const studentName = document.getElementById('student-name').value.trim();
+
+            if (!studentId || !studentName) {
+                alert('請先填寫班號與姓名！');
+                document.getElementById('student-info-section').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            attemptCount++;
+            let correctCount = 0;
+            let wrongItems = [];
+            const userAnswers = {};
+
+            ['q1', 'q3', 'q4', 'q5'].forEach(qId => {
+                const selected = getCheckedValues(qId);
+                userAnswers[qId] = selected.length > 0 ? selected.join('') : '未作答';
+                const isCorrect = arraysEqual(selected, answersKey[qId]);
+                updateCardUI(qId, isCorrect);
+                if (isCorrect) correctCount++;
+                else wrongItems.push(qId);
+            });
+
+            const q2Val = document.getElementById('q2').value.trim();
+            userAnswers['q2'] = q2Val || '未作答';
+            const isQ2Correct = (q2Val === answersKey['q2']);
+            updateCardUI('q2', isQ2Correct);
+            if (isQ2Correct) correctCount++;
+            else wrongItems.push('q2');
+
+            if (wrongItems.length > 0 && attemptCount < 2) {
+                document.getElementById('retry-hint-banner').classList.remove('hidden');
+                document.getElementById('retry-hint-banner').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            document.getElementById('retry-hint-banner').classList.add('hidden');
+            document.querySelectorAll('input').forEach(el => el.disabled = true);
+            document.getElementById('btn-submit').classList.add('hidden');
+
+            const score = correctCount * 20;
+
+            const summaryEl = document.getElementById('result-summary');
+            document.getElementById('score-text').innerText = `${score} 分`;
+            document.getElementById('accuracy-text').innerText = `共 ${totalQuestions} 題，您答對了 ${correctCount} 題。`;
+            summaryEl.classList.remove('hidden');
+            summaryEl.scrollIntoView({ behavior: 'smooth' });
+
+            saveRecord({
+                id: studentId,
+                name: studentName,
+                score: score,
+                correctCount: correctCount,
+                answers: userAnswers,
+                timestamp: new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' })
+            });
+        }
+
+        function updateCardUI(qId, isCorrect) {
+            const cardEl = document.getElementById(`q-card-${qId}`);
+            const msgEl = cardEl.querySelector('.result-msg');
+            if (isCorrect) {
+                cardEl.classList.remove('border-slate-200', 'border-rose-500');
+                cardEl.classList.add('border-emerald-500');
+                msgEl.className = 'result-msg text-sm font-semibold text-emerald-600';
+                msgEl.innerText = '✓ 正確';
+            } else {
+                cardEl.classList.remove('border-slate-200', 'border-emerald-500');
+                cardEl.classList.add('border-rose-500');
+                msgEl.className = 'result-msg text-sm font-semibold text-rose-600';
+                msgEl.innerText = '✗ 錯誤';
+            }
+        }
+
+        function saveRecord(record) {
+            let records = JSON.parse(localStorage.getItem('quiz_3q_1119_records') || '[]');
+            records.push(record);
+            localStorage.setItem('quiz_3q_1119_records', JSON.stringify(records));
+        }
+
+        function toggleAdminModal() {
+            document.getElementById('admin-modal').classList.toggle('hidden');
+        }
+
+        function checkAdminPassword() {
+            const pwd = document.getElementById('admin-password').value;
+            if (pwd === 'admin123') {
+                document.getElementById('admin-auth').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
+                renderAdminStats();
+            } else {
+                alert('密碼錯誤！');
+            }
+        }
+
+        function renderAdminStats() {
+            const records = JSON.parse(localStorage.getItem('quiz_3q_1119_records') || '[]');
+            document.getElementById('stat-count').innerText = records.length;
+
+            if (records.length === 0) {
+                document.getElementById('stat-avg').innerText = '0';
+                document.getElementById('stat-range').innerText = '0 / 0';
+                document.getElementById('student-records-tbody').innerHTML = `<tr><td colspan="5" class="text-center py-4 text-slate-400">目前尚無作答紀錄</td></tr>`;
+                return;
+            }
+
+            const scores = records.map(r => r.score);
+            const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+            const max = Math.max(...scores);
+            const min = Math.min(...scores);
+
+            document.getElementById('stat-avg').innerText = avg;
+            document.getElementById('stat-range').innerText = `${max} / ${min}`;
+
+            const tbody = document.getElementById('student-records-tbody');
+            tbody.innerHTML = records.map(r => `
+                <tr class="border-b hover:bg-slate-50">
+                    <td class="px-3 py-2 font-medium">${r.id}</td>
+                    <td class="px-3 py-2">${r.name}</td>
+                    <td class="px-3 py-2 font-bold ${r.score >= 60 ? 'text-emerald-600' : 'text-rose-600'}">${r.score}</td>
+                    <td class="px-3 py-2 text-xs font-mono">1:${r.answers.q1} | 2:${r.answers.q2} | 3:${r.answers.q3} | 4:${r.answers.q4} | 5:${r.answers.q5}</td>
+                    <td class="px-3 py-2 text-xs text-slate-400">${r.timestamp}</td>
+                </tr>
+            `).join('');
+        }
+
+        function clearRecords() {
+            if (confirm('確定要清空所有學生的作答紀錄嗎？')) {
+                localStorage.removeItem('quiz_3q_1119_records');
+                renderAdminStats();
+            }
+        }
+
+        function exportCSV() {
+            const records = JSON.parse(localStorage.getItem('quiz_3q_1119_records') || '[]');
+            if (records.length === 0) {
+                alert('目前沒有紀錄可匯出！');
+                return;
+            }
+
+            let csvContent = "\uFEFF班號,姓名,總分,第1題,第2題,第3題,第4題,第5題,提交時間\n";
+            records.forEach(r => {
+                csvContent += `"${r.id}","${r.name}",${r.score},"${r.answers.q1}","${r.answers.q2}","${r.answers.q3}","${r.answers.q4}","${r.answers.q5}","${r.timestamp}"\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `考前複習_3Q_1119_成績_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            if (typeof renderMathInElement === 'function') {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: "$$", right: "$$", display: true},
+                        {left: "$", right: "$", display: false}
+                    ]
+                });
+            }
+        });
+    </script>
+</body>
+</html>
